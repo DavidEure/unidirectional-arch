@@ -38,9 +38,7 @@ class GreetingFragment : Fragment(R.layout.fragment_greeting) {
         }
         view.findViewById<AppCompatButton>(R.id.greet).apply {
             setOnClickListener {
-                lifecycleScope.launch {
-                    viewModel.actionFlow.emit(GreetingAction.Greet(nickname?.text.toString()))
-                }
+                viewModel.greet(nickname?.text.toString())
             }
         }
     }
