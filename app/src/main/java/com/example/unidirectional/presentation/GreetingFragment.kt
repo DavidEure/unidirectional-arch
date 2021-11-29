@@ -8,21 +8,30 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.example.unidirectional.R
 import com.example.unidirectional.infoWorkingIn
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class GreetingFragment : Fragment(R.layout.fragment_greeting) {
     private val viewModel: GreetingViewModel by viewModels()
-    private var uiStateJob: Job? = null
     private var nickname: AppCompatEditText? = null
     private var successMessage: AppCompatTextView? = null
     private var failureMessage: AppCompatTextView? = null
     private var loading: ProgressBar? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycleScope.launch {
+            viewModel.state
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect { state -> handleState(state) }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,15 +59,4 @@ class GreetingFragment : Fragment(R.layout.fragment_greeting) {
         failureMessage?.text = state.failureMessage
     }
 
-    override fun onStart() {
-        super.onStart()
-        uiStateJob = lifecycleScope.launch {
-            viewModel.state.collect { state -> handleState(state) }
-        }
-    }
-
-    override fun onStop() {
-        uiStateJob?.cancel()
-        super.onStop()
-    }
 }
