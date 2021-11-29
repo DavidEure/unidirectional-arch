@@ -43,7 +43,7 @@ class GreetingFragment : Fragment(R.layout.fragment_greeting) {
         }
     }
 
-    private fun handleState(state: GreetingState) {
+    private fun handleState(state: GreetingViewState) {
         infoWorkingIn("handleState $state")
         loading?.visibility = if (state.isLoading) View.VISIBLE else View.INVISIBLE
         successMessage?.text = state.successMessage
