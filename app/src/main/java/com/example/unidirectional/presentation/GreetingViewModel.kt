@@ -14,22 +14,26 @@ import kotlinx.coroutines.launch
 class GreetingViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
 
     private val isLoading = MutableStateFlow(false)
+    private val nickname = savedStateHandle.getLiveData("nickname", "")
     private val successMessage = savedStateHandle.getLiveData("successMessage", "")
     private val failureMessage = savedStateHandle.getLiveData("failureMessage", "")
 
     val state = combineTuple(
         isLoading,
+        nickname.asFlow(),
         successMessage.asFlow(),
         failureMessage.asFlow()
-    ).map { (isLoading, successMessage, failureMessage) ->
+    ).map { (isLoading, nickname, successMessage, failureMessage) ->
         GreetingViewState(
             isLoading,
+            nickname,
             successMessage,
             failureMessage
         )
     }
 
-    fun greet(nickname: String) = viewModelScope.launch {
+    fun greet() = viewModelScope.launch {
+        val nickname = nickname.value ?: ""
         if (nickname.isBlank()) {
             failureMessage.value = "Please write your nickname"
             successMessage.value = ""
@@ -44,10 +48,17 @@ class GreetingViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             successMessage.value = message
         }
     }
+
+    fun onNickNameChange(text: String) = viewModelScope.launch {
+        if (text.length <= 20) {
+            nickname.value = text
+        }
+    }
 }
 
 data class GreetingViewState(
-    val isLoading: Boolean,
-    val successMessage: String,
-    val failureMessage: String
+    val isLoading: Boolean = false,
+    val nickname: String = "",
+    val successMessage: String = "",
+    val failureMessage: String = ""
 )
