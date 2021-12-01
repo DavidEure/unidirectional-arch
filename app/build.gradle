@@ -24,6 +24,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    buildFeatures {
+        // Enables Jetpack Compose for this module
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.0.5"
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -39,6 +46,7 @@ dependencies {
     def retrofit_version = "2.9.0"
     def moshi_version = "1.9.3"
     def okhttp_version = "4.8.0"
+    def compose = "1.0.5"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
@@ -58,6 +66,15 @@ dependencies {
     implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
     implementation 'com.github.Zhuinden:flow-combinetuple-kt:1.1.1'
+
+
+    implementation "androidx.compose.runtime:runtime:$compose"
+    implementation "androidx.compose.ui:ui:$compose"
+    implementation "androidx.compose.foundation:foundation:$compose"
+    implementation "androidx.compose.foundation:foundation-layout:$compose"
+    implementation "androidx.compose.material:material:$compose"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose"
+    implementation "androidx.compose.ui:ui-tooling:$compose"
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
 }
